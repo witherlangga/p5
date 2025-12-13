@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Segmentasi Daun - K-Means</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h1>Segmentasi Daun</h1>
+        <p class="subtitle">
+            Deteksi Daun Sehat dan Berpenyakit<br>
+            menggunakan Metode <b>K-Means Clustering</b>
+        </p>
+
+        <form method="POST" enctype="multipart/form-data">
+            <label class="upload-box">
+                <input type="file" name="image" required>
+                <span>Pilih Gambar Daun</span>
+            </label>
+
+            <button type="submit">Proses Segmentasi</button>
+        </form>
+
+        <p class="footer-text">
+            Mata Kuliah Pemrograman 5
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

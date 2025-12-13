@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Hasil Segmentasi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <h1>🍃 Hasil Segmentasi Daun</h1>
+
+    <div class="image-section">
+        <div class="image-card">
+            <h3>Gambar Asli</h3>
+            <img src="/{{ original }}">
+        </div>
+
+        <div class="image-card">
+            <h3>Hasil Segmentasi</h3>
+            <img src="/{{ result }}">
+        </div>
+    </div>
+
+    <h2>Hasil Setiap Cluster</h2>
+
+    <div class="cluster-grid">
+        {% for cluster in clusters %}
+        <div class="cluster-card">
+            <img src="/{{ cluster.path }}">
+            <h4>Cluster {{ cluster.index }}</h4>
+            <p>{{ cluster.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="/" class="back-btn">← Upload Gambar Lain</a>
+</div>
+
+</body>
+</html>
