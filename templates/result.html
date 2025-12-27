@@ -19,7 +19,7 @@
       }
 
       .container {
-        max-width: 1100px;
+        max-width: 1200px;
         margin: auto;
         background: #ffffff;
         padding: 40px;
@@ -46,7 +46,6 @@
         font-size: 22px;
       }
 
-      /* IMAGE SECTION */
       .image-section {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -66,7 +65,6 @@
         border-radius: 10px;
       }
 
-      /* CLUSTER GRID */
       .cluster-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -95,7 +93,6 @@
         color: #4b5563;
       }
 
-      /* TABLE */
       table {
         width: 100%;
         border-collapse: collapse;
@@ -119,7 +116,6 @@
         background: #f9fafb;
       }
 
-      /* GRAPH */
       .chart-card {
         margin-top: 30px;
         padding: 25px;
@@ -135,9 +131,8 @@
         border-radius: 12px;
       }
 
-      /* BUTTON */
       .back {
-        margin-top: 50px;
+        margin-top: 60px;
         text-align: center;
       }
 
@@ -149,23 +144,33 @@
         text-decoration: none;
         font-weight: 600;
       }
+
+      .divider {
+        margin: 60px 0;
+        border-top: 2px dashed #d1d5db;
+      }
     </style>
   </head>
 
   <body>
     <div class="container">
       <h1>Hasil Segmentasi Daun</h1>
-      <p class="subtitle">Metode K-Means Clustering & Analisis Warna</p>
+      <p class="subtitle">
+        Metode K-Means Clustering & Analisis Warna
+      </p>
+
+      {% for item in results %}
+      <h2>Hasil untuk Gambar: {{ item.original }}</h2>
 
       <div class="image-section">
         <div class="image-card">
           <h3>Gambar Asli</h3>
-          <img src="{{ url_for('static', filename=original) }}" />
+          <img src="{{ url_for('static', filename=item.original) }}" />
         </div>
 
         <div class="image-card">
           <h3>Hasil Segmentasi</h3>
-          <img src="{{ url_for('static', filename=result) }}" />
+          <img src="{{ url_for('static', filename=item.result) }}" />
         </div>
       </div>
 
@@ -175,11 +180,12 @@
 
       <h2>Hasil Setiap Cluster</h2>
       <div class="cluster-grid">
-        {% for cluster in clusters %}
+        {% for cluster in item.clusters %}
         <div class="cluster-card">
           <img src="{{ url_for('static', filename=cluster.path) }}" />
           <h4>Cluster {{ cluster.index }}</h4>
-          <p>{{ cluster.description }}</p>
+          <p><strong>Rule-based:</strong> {{ cluster.rule_description }}</p>
+          <p><strong>Random Forest:</strong> {{ cluster.rf_text }}</p>
         </div>
         {% endfor %}
       </div>
@@ -193,21 +199,52 @@
           <th>%</th>
           <th>Keterangan</th>
         </tr>
-        {% for d in numeric_data %}
+        {% for d in item.numeric_data %}
         <tr>
           <td>{{ d.cluster }}</td>
           <td>{{ d.centroid }}</td>
           <td>{{ d.pixel_count }}</td>
           <td>{{ d.percentage }}%</td>
-          <td>{{ d.description }}</td>
+          <td>{{ d.rule_description }}</td>
         </tr>
         {% endfor %}
       </table>
 
       <h2>Grafik Distribusi</h2>
       <div class="chart-card">
-        <img src="{{ url_for('static', filename=bar_chart) }}" />
+        <img src="{{ url_for('static', filename=item.bar_chart) }}" />
       </div>
+
+      <h2>Kesimpulan Per-Daun</h2>
+      <div style="background:#f9fafb;padding:18px;border-radius:12px;margin-top:12px;text-align:center;">
+        <p style="margin:0;font-weight:700;color:#111827;">{{ item.short_conclusion }}</p>
+      </div>
+
+      <div class="divider"></div>
+      {% endfor %}
+
+      {% if comparison %}
+      <h2>Perbandingan Antar Daun</h2>
+      <div style="background:#f9fafb;padding:18px;border-radius:12px;margin-top:12px;">
+        <p style="margin:0;font-weight:700;">{{ comparison.majority }}</p>
+        <table style="margin-top:12px;">
+          <tr>
+            <th>Kelas</th>
+            <th>Jumlah</th>
+            <th>%</th>
+            <th>Avg Prob</th>
+          </tr>
+          {% for b in comparison.breakdown %}
+          <tr>
+            <td>{{ b.label }}</td>
+            <td>{{ b.count }}</td>
+            <td>{{ b.percent }}%</td>
+            <td>{{ b.avg_prob }}%</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% endif %}
 
       <div class="back">
         <a href="/">Upload Gambar Lain</a>
